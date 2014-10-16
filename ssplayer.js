@@ -148,6 +148,7 @@ SsAnimation.prototype.drawFunc = function (ctx, frameNo, x, y, flipH, flipV, par
     );
 
     var frameData = this.ssaData.ssa[frameNo];
+
     for (var refNo = 0; refNo < frameData.length; refNo++) {
 
         var partData = frameData[refNo];
@@ -165,8 +166,8 @@ SsAnimation.prototype.drawFunc = function (ctx, frameNo, x, y, flipH, flipV, par
         var vdw = sw;
         var vdh = sh;
 
-        dx += x;
-        dy += y;
+        // dx += x;
+        // dy += y;
 
         if (sw > 0 && sh > 0) {
 
@@ -183,8 +184,11 @@ SsAnimation.prototype.drawFunc = function (ctx, frameNo, x, y, flipH, flipV, par
 
             ctx.globalCompositeOperation = blendOperations[blend];
             ctx.globalAlpha = alpha;
-            //ctx.setTransform(1, 0, 0, 1, dx, dy);         // 最終的な表示位置へ. To display the final position.
-            ctx.setTransform(1 * scale, 0, 0, 1 * scale, dx * scale, dy * scale);   // 最終的な表示位置へ. To display the final position.
+
+            ctx.save();
+
+            ctx.translate(dx, dy);
+
             ctx.rotate(-dang);
             ctx.scale(scaleX, scaleY);
             ctx.translate(-ox + vdw / 2, -oy + vdh / 2);    // パーツの原点へ. To the origin of the parts.
@@ -202,6 +206,7 @@ SsAnimation.prototype.drawFunc = function (ctx, frameNo, x, y, flipH, flipV, par
             //      console.log(sx, sy, sw, sh);
 
             ctx.drawImage(img, sx, sy, sw, sh, -vdw / 2, -vdh / 2, vdw, vdh);
+            ctx.restore();
         }
 
         var state = partStates[partNo];
@@ -418,3 +423,4 @@ SsSprite.prototype.draw = function (ctx, currentTime) {
 
     this.inner.animation.drawFunc(ctx, this.getFrameNo(), this.x, this.y, this.flipH, this.flipV, this.inner.partStates, this.scale);
 }
+
